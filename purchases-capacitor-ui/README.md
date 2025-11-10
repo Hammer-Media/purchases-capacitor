@@ -20,6 +20,23 @@ npx cap sync
 
 > Note: Make sure to use the same version for both `@revenuecat/purchases-capacitor` and `@revenuecat/purchases-capacitor-ui`.
 
+### Swift Package Manager (iOS)
+
+Starting with Capacitor 7.0.0, this plugin supports Swift Package Manager (SPM) for iOS. To use SPM instead of CocoaPods:
+
+1. When adding the iOS platform, specify SPM as the package manager:
+```bash
+npx cap add ios --packagemanager SPM
+```
+
+2. If you've already added the iOS platform with CocoaPods, you can migrate to SPM by removing and re-adding the iOS platform:
+```bash
+npx cap remove ios
+npx cap add ios --packagemanager SPM
+```
+
+**Note:** Both CocoaPods and Swift Package Manager are fully supported. Choose the package manager that best fits your project's needs.
+
 ## iOS Configuration
 
 For iOS, you need to add SwiftUI to your app's capabilities. Follow the [iOS SDK's SwiftUI Configuration](https://github.com/RevenueCat/purchases-ios-ui#swift-package-manager) guide for details.

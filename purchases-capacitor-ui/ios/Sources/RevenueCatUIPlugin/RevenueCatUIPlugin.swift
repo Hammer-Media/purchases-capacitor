@@ -1,13 +1,18 @@
-import Foundation
 import Capacitor
+import Foundation
 import PurchasesHybridCommonUI
 
-/**
- * RevenueCat UI Plugin for Capacitor
- * Based on the official RevenueCat Flutter UI SDK approach
- */
+/// RevenueCat UI Plugin for Capacitor
+/// Based on the official RevenueCat Flutter UI SDK approach
 @objc(RevenueCatUIPlugin)
-public class RevenueCatUIPlugin: CAPPlugin {
+public class RevenueCatUIPlugin: CAPPlugin, CAPBridgedPlugin {
+    public let identifier = "RevenueCatUIPlugin"
+    public let jsName = "RevenueCatUI"
+    public let pluginMethods: [CAPPluginMethod] = [
+        CAPPluginMethod(name: "presentPaywall", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "presentPaywallIfNeeded", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "presentCustomerCenter", returnType: CAPPluginReturnPromise),
+    ]
 
     // MARK: - Properties
 
@@ -49,7 +54,7 @@ public class RevenueCatUIPlugin: CAPPlugin {
 
             var options: [String: Any] = [
                 "displayCloseButton": displayCloseButton,
-                "shouldBlockTouchEvents": true
+                "shouldBlockTouchEvents": true,
             ]
 
             if let offeringOptions = offeringOptions {
@@ -84,7 +89,9 @@ public class RevenueCatUIPlugin: CAPPlugin {
                 return
             }
 
-            guard let requiredEntitlementIdentifier = call.getString("requiredEntitlementIdentifier") else {
+            guard
+                let requiredEntitlementIdentifier = call.getString("requiredEntitlementIdentifier")
+            else {
                 call.reject("Required entitlement identifier is missing", "PAYWALL_ERROR")
                 return
             }
@@ -95,7 +102,7 @@ public class RevenueCatUIPlugin: CAPPlugin {
             var options: [String: Any] = [
                 "displayCloseButton": displayCloseButton,
                 "shouldBlockTouchEvents": true,
-                "requiredEntitlementIdentifier": requiredEntitlementIdentifier
+                "requiredEntitlementIdentifier": requiredEntitlementIdentifier,
             ]
 
             if let offeringOptions = offeringOptions {
@@ -126,7 +133,9 @@ public class RevenueCatUIPlugin: CAPPlugin {
             }
 
             guard #available(iOS 15.0, *), let proxy = self._customerCenterProxy else {
-                call.reject("CustomerCenterViewController requires iOS 15.0 or newer", "CUSTOMER_CENTER_ERROR")
+                call.reject(
+                    "CustomerCenterViewController requires iOS 15.0 or newer",
+                    "CUSTOMER_CENTER_ERROR")
                 return
             }
 
@@ -141,9 +150,9 @@ public class RevenueCatUIPlugin: CAPPlugin {
     }
 }
 
-private extension RevenueCatUIPlugin {
+extension RevenueCatUIPlugin {
 
-    func processOfferingOptions(_ call: CAPPluginCall) -> [String: Any]? {
+    fileprivate func processOfferingOptions(_ call: CAPPluginCall) -> [String: Any]? {
         let offering = call.getObject("offering")
         let offeringIdentifier = offering?["identifier"] as? String
         let availablePackages = offering?["availablePackages"] as? JSArray
@@ -160,19 +169,27 @@ private extension RevenueCatUIPlugin {
         if let offeringIdentifier = offeringIdentifier {
             options[PaywallProxy.PaywallOptionsKeys.offeringIdentifier] = offeringIdentifier
             if let presentedOfferingContext = presentedOfferingContext,
-                let contextOfferingIdentifier = contextOfferingIdentifier {
+                let contextOfferingIdentifier = contextOfferingIdentifier
+            {
                 var presentedOfferingContextMap = [
-                    PaywallProxy.PresentedOfferingContextKeys.offeringIdentifier: contextOfferingIdentifier,
-                    PaywallProxy.PresentedOfferingContextKeys.placementIdentifier: contextPlacementIdentifier,
+                    PaywallProxy.PresentedOfferingContextKeys.offeringIdentifier:
+                        contextOfferingIdentifier,
+                    PaywallProxy.PresentedOfferingContextKeys.placementIdentifier:
+                        contextPlacementIdentifier,
                 ]
                 if let contextTargetingRevision = contextTargetingRevision,
-                    let contextTargetingRuleId {
-                    presentedOfferingContextMap[PaywallProxy.PresentedOfferingContextKeys.targetingContext] = [
-                        PaywallProxy.PresentedOfferingTargetingContextKeys.revision: contextTargetingRevision,
-                        PaywallProxy.PresentedOfferingTargetingContextKeys.ruleId: contextTargetingRuleId
-                    ]
+                    let contextTargetingRuleId
+                {
+                    presentedOfferingContextMap[
+                        PaywallProxy.PresentedOfferingContextKeys.targetingContext] = [
+                            PaywallProxy.PresentedOfferingTargetingContextKeys.revision:
+                                contextTargetingRevision,
+                            PaywallProxy.PresentedOfferingTargetingContextKeys.ruleId:
+                                contextTargetingRuleId,
+                        ]
                 }
-                options[PaywallProxy.PaywallOptionsKeys.presentedOfferingContext] = presentedOfferingContextMap
+                options[PaywallProxy.PaywallOptionsKeys.presentedOfferingContext] =
+                    presentedOfferingContextMap
             }
             return options
         } else {
@@ -186,7 +203,8 @@ private extension RevenueCatUIPlugin {
 /// Type alias for PaywallProxy to avoid direct reference to the concrete type
 private protocol PaywallProxyType: AnyObject {
     func presentPaywall(options: [String: Any], paywallResultHandler: @escaping (String) -> Void)
-    func presentPaywallIfNeeded(options: [String: Any], paywallResultHandler: @escaping (String) -> Void)
+    func presentPaywallIfNeeded(
+        options: [String: Any], paywallResultHandler: @escaping (String) -> Void)
 }
 
 /// Type alias for CustomerCenterProxy to avoid direct reference to the concrete type
