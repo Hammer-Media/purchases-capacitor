@@ -2,11 +2,11 @@
 import PackageDescription
 
 let package = Package(
-    name: "RevenuecatPurchasesCapacitorUI",
+    name: "RevenuecatPurchasesCapacitorUi",
     platforms: [.iOS(.v15)],
     products: [
         .library(
-            name: "RevenuecatPurchasesCapacitorUI",
+            name: "RevenuecatPurchasesCapacitorUi",
             targets: ["RevenueCatUIPlugin"])
     ],
     dependencies: [
