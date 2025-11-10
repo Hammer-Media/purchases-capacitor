@@ -25,6 +25,6 @@ let package = Package(
         .testTarget(
             name: "RevenueCatUIPluginTests",
             dependencies: ["RevenueCatUIPlugin"],
-            path: "ios/Tests/RevenueCatUIPluginTests"),
+            path: "ios/Tests/RevenueCatUIPluginTests")
     ]
 )
