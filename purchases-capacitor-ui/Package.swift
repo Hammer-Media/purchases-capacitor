@@ -11,7 +11,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/ionic-team/capacitor-swift-pm.git", from: "7.0.0"),
-        .package(url: "https://github.com/RevenueCat/purchases-hybrid-common.git", from: "11.0.0"),
+        .package(url: "https://github.com/RevenueCat/purchases-hybrid-common.git", from: "11.0.0")
     ],
     targets: [
         .target(
@@ -19,7 +19,7 @@ let package = Package(
             dependencies: [
                 .product(name: "Capacitor", package: "capacitor-swift-pm"),
                 .product(name: "Cordova", package: "capacitor-swift-pm"),
-                .product(name: "PurchasesHybridCommonUI", package: "purchases-hybrid-common"),
+                .product(name: "PurchasesHybridCommonUI", package: "purchases-hybrid-common")
             ],
             path: "ios/Sources/RevenueCatUIPlugin"),
         .testTarget(
